@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    container_name: app
+    image: 'meguiluzortiz/tenpo'
+    # build:
+    #   context: .
+    ports:
+      - '8080:8080'
+      # - '5005:5005' # debug port
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      # - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=n
+      - DATABASE_HOST=db
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: 'postgres:12.3-alpine'
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'tenpo'
+    volumes:
+      - db-data:/var/lib/postgresql/data/
+
+volumes:
+  db-data:
