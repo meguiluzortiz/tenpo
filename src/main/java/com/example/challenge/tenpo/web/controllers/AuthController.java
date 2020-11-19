@@ -1,10 +1,14 @@
 package com.example.challenge.tenpo.web.controllers;
 
+import javax.validation.Valid;
+
+import com.example.challenge.tenpo.service.UserService;
 import com.example.challenge.tenpo.web.dto.LoginRequestDto;
 import com.example.challenge.tenpo.web.dto.LoginResponseDto;
 import com.example.challenge.tenpo.web.dto.SignupRequestDto;
 import com.example.challenge.tenpo.web.dto.SignupResponseDto;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,13 +27,17 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/auth")
 public class AuthController {
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/signup")
     @ApiOperation(value = "Create new user")
     @ApiResponses({ //
             @ApiResponse(code = 400, message = "Bad Request") //
     })
-    public SignupResponseDto signup(@RequestBody SignupRequestDto request) {
-        return new SignupResponseDto("test");
+    public SignupResponseDto signup(@RequestBody @Valid SignupRequestDto request) {
+        String username = userService.createUser(request);
+        return new SignupResponseDto(username);
     }
 
     @PostMapping("/login")
@@ -37,7 +45,7 @@ public class AuthController {
     @ApiResponses({ //
             @ApiResponse(code = 400, message = "Bad Request") //
     })
-    public LoginResponseDto login(@RequestBody LoginRequestDto request) {
+    public LoginResponseDto login(@RequestBody @Valid LoginRequestDto request) {
         return new LoginResponseDto("token");
     }
 }

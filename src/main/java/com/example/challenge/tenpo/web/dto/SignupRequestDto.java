@@ -16,4 +16,9 @@ public class SignupRequestDto {
     @ApiModelProperty(example = "test")
     private String username;
 
+    @NotEmpty
+    @Size(min = 4, max = 12)
+    @ApiModelProperty(example = "test")
+    private String password;
+
 }
