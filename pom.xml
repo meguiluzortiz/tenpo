@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<io.springfox.version>2.9.2</io.springfox.version>
+		<io.jsonwebtoken.version>0.9.1</io.jsonwebtoken.version>
 	</properties>
 
 	<dependencies>
@@ -23,6 +24,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>${io.jsonwebtoken.version}</version>
 		</dependency>
 
 		<dependency>
