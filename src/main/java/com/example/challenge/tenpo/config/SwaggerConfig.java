@@ -14,6 +14,7 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
@@ -36,11 +37,12 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo()) //
                 .tags( //
                         new Tag("Security", "Security endpoints", 0), //
-                        new Tag("Test", "Test endpoints", 0) //
+                        new Tag("Test", "Test endpoints", 1) //
                 ) //
                 .produces(new HashSet<>(DEFAULT_PRODUCES_CONSUMES)) //
                 .consumes(new HashSet<>(DEFAULT_PRODUCES_CONSUMES)) //
                 .useDefaultResponseMessages(false) //
+                .securitySchemes(Arrays.asList(apiKey())) //
                 .select() //
                 .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE)) //
                 .paths(PathSelectors.any()) //
@@ -60,6 +62,10 @@ public class SwaggerConfig {
                 .extensions(new ArrayList<>());
 
         return builder.build();
+    }
+
+    private ApiKey apiKey() {
+        return new ApiKey("JWT", AUTHORIZATION_HEADER, "header");
     }
 
 }
