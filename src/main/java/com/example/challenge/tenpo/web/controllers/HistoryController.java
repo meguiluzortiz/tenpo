@@ -1,11 +1,17 @@
 package com.example.challenge.tenpo.web.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.example.challenge.tenpo.service.HistoryService;
+import com.example.challenge.tenpo.web.dto.HistoryResponseDto;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -22,15 +28,22 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/history")
 public class HistoryController {
 
+        @Value("${application.history.page.size}")
+        private Integer pageSize;
+
+        @Autowired
+        private HistoryService historyService;
+
         @ApiOperation(value = "List user's operations history")
         @ApiResponses({ //
                         @ApiResponse(code = 404, message = "Not found"), //
         })
         @GetMapping("/{username}")
-        public List<String> history( //
+        public Slice<HistoryResponseDto> findAllByUsername( //
                         @ApiParam(value = "Username to look for", example = "test") //
-                        @PathVariable String username //
-        ) {
-                return new ArrayList<>();
+                        @PathVariable String username, //
+                        @RequestParam(defaultValue = "0") int page) {
+                Pageable pageRequest = PageRequest.of(page, pageSize);
+                return historyService.findAllByUsername(username, pageRequest);
         }
 }
