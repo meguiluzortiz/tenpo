@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "2800e1c8-7082-4ad3-bfc4-ffc6ae034e00",
+		"name": "Tenpo Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9176d497-9308-46ec-8499-533e8e007d25",
+								"exec": [
+									"pm.test(\"Status code is 200 (OK)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.environment.set(\"lastSignedUsername\", response.username);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test-{{$randomInt}}\",\n    \"password\": \"{{lastSignedPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Register a new user."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9b273e98-feb8-4a18-9bf0-ee970322d6a4",
+								"exec": [
+									"pm.test(\"Status code is 200 (OK)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.environment.set(\"lastLoggedUserToken\", response.authToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{lastSignedUsername}}\",\n    \"password\": \"{{lastSignedPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticate a user."
+					},
+					"response": []
+				}
+			],
+			"description": "Auth related endpoints.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f5f6dd9a-4843-47f7-a0af-4c2165d337a9",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "706c763c-ea39-46a3-a486-1b5361862329",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Test",
+			"item": [
+				{
+					"name": "Sum",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{lastLoggedUserToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"number1\": 3,\n    \"number2\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/math/sum",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"math",
+								"sum"
+							]
+						},
+						"description": "Sum two numbers.\n+ This endpoint requires previous authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "History - Annonymous User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/history/:username?page=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"history",
+								":username"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								}
+							],
+							"variable": [
+								{
+									"key": "username",
+									"value": "{{unameAnnonymous}}"
+								}
+							]
+						},
+						"description": "List user's operations history."
+					},
+					"response": []
+				},
+				{
+					"name": "History - Last Signed User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/history/:username",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"history",
+								":username"
+							],
+							"variable": [
+								{
+									"key": "username",
+									"value": "{{lastSignedUsername}}"
+								}
+							]
+						},
+						"description": "List user's operations history."
+					},
+					"response": []
+				},
+				{
+					"name": "History - User not found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/history/:username",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"history",
+								":username"
+							],
+							"variable": [
+								{
+									"key": "username",
+									"value": "notfound"
+								}
+							]
+						},
+						"description": "List user's operations history."
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
