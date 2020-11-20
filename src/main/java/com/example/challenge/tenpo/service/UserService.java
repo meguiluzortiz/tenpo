@@ -3,6 +3,7 @@ package com.example.challenge.tenpo.service;
 import com.example.challenge.tenpo.exceptions.UserAlreadyExistException;
 import com.example.challenge.tenpo.persistence.entities.User;
 import com.example.challenge.tenpo.persistence.repository.UserRepository;
+import com.example.challenge.tenpo.util.ValidationUtil;
 import com.example.challenge.tenpo.web.dto.SignupRequestDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,15 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private ValidationUtil validationUtil;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Transactional
     public String createUser(SignupRequestDto request) throws UserAlreadyExistException {
         String username = request.getUsername();
-        if (usernameExist(username)) {
+        if (validationUtil.usernameExist(username)) {
             throw new UserAlreadyExistException("There is already an user with that username: " + username);
         }
 
@@ -34,7 +38,4 @@ public class UserService {
         return savedUser.getUsername();
     }
 
-    private boolean usernameExist(String username) {
-        return userRepository.findByUsername(username).isPresent();
-    }
 }

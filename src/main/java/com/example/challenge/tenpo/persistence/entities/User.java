@@ -1,7 +1,5 @@
 package com.example.challenge.tenpo.persistence.entities;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,5 +21,4 @@ public class User {
 
     private String username;
     private String password;
-
 }
